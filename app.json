@@ -26,6 +26,11 @@
     "web": {
       "favicon": "./assets/favicon.png",
       "bundler": "metro"
-    }
+    },
+    "scheme":"appnovo",
+    "plugins": [
+      "expo-router",
+      "expo-secure-store"
+    ]
   }
 }
