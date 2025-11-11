@@ -8,7 +8,8 @@ import Toast from 'react-native-toast-message';
 // (Interface User... igual a antes)
 interface User {
   id: string;
-  nomeCompleto: string;
+  primeiroNome: string;
+  sobrenome: string;
   email: string;
 }
 
@@ -17,7 +18,7 @@ interface AuthContextData {
   user: User | null;
   isLoading: boolean;
   signIn(email: string, senha: string): Promise<void>;
-  signUp(nomeCompleto: string, email: string, senha: string): Promise<void>;
+  signUp(primeiroNome: string, sobrenome: string, email: string, senha: string): Promise<void>;
   signOut(): void;
   logOut(): void;
 }
@@ -58,7 +59,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         headers: { 'Authorization': `Bearer ${access_token}` }
       });
       const userData: User = profileResponse.data;
-
+      console.log({userData})
       api.defaults.headers.common['Authorization'] = `Bearer ${access_token}`;
       await SecureStore.setItemAsync('token', access_token);
       await SecureStore.setItemAsync('user', JSON.stringify(userData));
@@ -77,8 +78,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  async function signUp(nomeCompleto: string, email: string, senha: string) {
-    await api.post('/auth/register', { nomeCompleto, email, senha });
+  async function signUp(primeiroNome: string, sobrenome: string, email: string, senha: string) {
+    await api.post('/auth/register', { primeiroNome, sobrenome, email, senha });
     await signIn(email, senha);
   }
 

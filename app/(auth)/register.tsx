@@ -9,14 +9,15 @@ import Toast from 'react-native-toast-message';
 
 export default function RegisterScreen() {
   const router = useRouter();
-  const [nomeCompleto, setName] = useState('');
+  const [primeiroNome, setNome] = useState('');
+  const [sobrenome, setSobrenome] = useState('');
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { signUp } = useAuth();
 
   async function handleSignUp() {
-    if (!nomeCompleto || !email || !senha) {
+    if (!primeiroNome || !sobrenome || !email || !senha) {
       return Toast.show({
         type: 'info',
         text1: 'Atenção',
@@ -27,12 +28,12 @@ export default function RegisterScreen() {
     setIsLoading(true);
     try {
       console.log('Botão cadastrar pressionado')
-      await signUp(nomeCompleto, email, senha);
+      await signUp(primeiroNome, sobrenome, email, senha);
 
       Toast.show({
         type: 'success',
         text1: 'Cadastro realizado',
-        text2: 'Bem vindo, {}!'.replace('{}', nomeCompleto),
+        text2: 'Bem vindo, {}!'.replace('{}', primeiroNome),
         topOffset: 80,
       });
 
@@ -61,9 +62,15 @@ export default function RegisterScreen() {
       <Text className="text-base text-gray-600 mb-10">
         Cadastre-se para começar a usar o aplicativo
       </Text>
+      
       <InputDefault
-        placeholder="Nome completo"
-        onChangeText={setName}
+        placeholder="Primeiro nome"
+        onChangeText={setNome}
+        className="mb-4"
+      />
+      <InputDefault
+        placeholder="Sobrenome"
+        onChangeText={setSobrenome}
         className="mb-4"
       />
       <InputDefault

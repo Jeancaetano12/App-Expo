@@ -13,6 +13,10 @@ export function Header() {
     const { user, signOut } = useAuth();
     const navigation = useNavigation();
 
+    if (!user) {
+        return null
+    }
+
     return (
         <View className="bg-purple-800
         w-full flex-row items-center justify-between
@@ -27,7 +31,7 @@ export function Header() {
             </TouchableOpacity>
             {/*Nome do usuario*/}
             <Text className="text-lg text-white semibold ml-3 ">
-                Olá {user.nomeCompleto}!
+                Olá {user?.primeiroNome}!
             </Text>
             {/*Icone de configurações*/ }
             <TouchableOpacity

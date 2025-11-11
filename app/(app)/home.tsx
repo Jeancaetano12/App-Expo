@@ -23,7 +23,7 @@ export default function HomeScreen() {
           Tela Principal
         </Text>
         <Text className="text-lg text-gray-600 mb-10">
-          Bem-vindo(a), {user?.nomeCompleto}!
+          Bem-vindo(a), {user?.primeiroNome}!
         </Text>
         <ButtonDefault
           title="Sair (SignOut)"
