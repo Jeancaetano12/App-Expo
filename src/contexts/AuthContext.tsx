@@ -11,6 +11,8 @@ interface User {
   primeiroNome: string;
   sobrenome: string;
   email: string;
+  nomeCompleto: string;
+  role: string;
 }
 
 interface AuthContextData {
