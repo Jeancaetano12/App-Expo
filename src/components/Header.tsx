@@ -5,13 +5,14 @@ import { Feather } from '@expo/vector-icons';
 import { useAuth } from '@contexts/AuthContext';
 import { useEffect } from "react";
 import { useNavigation } from '@react-navigation/native';
+import { AppNavigationProp } from "../types/navigation";
 
 export function Header() {
     useEffect(() => {
         StatusBar.setBarStyle('light-content'); // Texto branco
     }, []);
     const { user, signOut } = useAuth();
-    const navigation = useNavigation();
+    const navigation = useNavigation<AppNavigationProp>();
 
     if (!user) {
         return null

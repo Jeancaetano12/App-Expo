@@ -19,4 +19,8 @@ export default function AppNavigator() {
 
         return () => clearTimeout(timer);
     }, [user, isLoading, router]);
+    
+
+    // ESSE COMPONENTE NÃO RETORNA NADA
+    return null;
 }
