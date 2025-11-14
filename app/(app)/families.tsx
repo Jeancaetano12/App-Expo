@@ -5,40 +5,27 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
 
 import { FamilyCard } from '@components/FamilyCard';
-
-const MOCK_DATA = [
-  { id: '1', name: 'Família Silva', address: 'Rua das Flores, 123', patients: 3 },
-  { id: '2', name: 'Família Oliveira', address: 'Av. Principal, 456', patients: 1 },
-  { id: '3', name: 'Família Souza', address: 'Beco da Esperança, 78', patients: 5 },
-  { id: '4', name: 'Família Sasuke', address: 'Beco da Esperança, 78', patients: 4 },
-  { id: '5', name: 'Família Lira', address: 'Beco da Esperança, 78', patients: 8 },
-  { id: '6', name: 'Família Caetano', address: 'Beco da Esperança, 78', patients: 1 },
-  { id: '7', name: 'Família Rodrigues', address: 'Beco da Esperança, 78', patients: 2 },
-  { id: '8', name: 'Família Tintin', address: 'Beco da Esperança, 78', patients: 3 },
-  { id: '9', name: 'Família Alexandre', address: 'Beco da Esperança, 78', patients: 2 },
-  { id: '10', name: 'Família Cassandra', address: 'Beco da Esperança, 78', patients: 3 },
-  { id: '11', name: 'Família Lucas', address: 'Beco da Esperança, 78', patients: 7 },
-];
+import { useFamilies } from '@hooks/useFamilies';
 
 export default function FamilyScreen() {
     const router = useRouter();
     const navigation = useNavigation();
+    const { families, isLoading, error } = useFamilies();
+    if (isLoading) {
+        return (
+        <View className="flex-1 justify-center items-center bg-background">
+            <ActivityIndicator size="large" color="#6200ee" />
+        </View>
+        );
+    }
 
-    // Loading pro futuro
-    const [loadingMore, setLoadingMore] = useState(false);
-
-    // Função do infinity scroll
-    const handleLoadMore = () => {
-        setLoadingMore(true);
-
-        setTimeout(() => {
-            // 3. Adiciona os novos dados (simulação)
-            // setData(prevData => [...prevData, ...novosDadosDaApi]);
-      
-            // 4. Para de carregar
-            setLoadingMore(false);
-        }, 1500);
-    };
+    if (error) {
+        return (
+        <View className="flex-1 justify-center items-center bg-background p-4">
+            <Text className="text-red-600 text-lg">Erro ao carregar famílias. Tente novamente mais tarde.</Text>
+        </View>
+        );
+    }
 
 return (
     <View className="flex-1 bg-background ">
@@ -51,25 +38,20 @@ return (
         </View>
 
         <FlatList
-            data={MOCK_DATA}
+            data={families}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
             <FamilyCard
                 family={item}
-                onPress={() => router.push(`/(app)/family/${item.id}`)} // Rota de detalhes (futuro)
+                onPress={() => router.push(`/(app)/family/${item.id}`)}
             />
             )}
             contentContainerClassName="p-4 pt-0"
         
-            // --- A MÁGICA DO INFINITE SCROLL ---
-        
-            // 1. Quando o usuário chegar ao fim da lista...
-            onEndReached={handleLoadMore}
-        // 2. ...chame a função quando estiver a 20% do fim.
-            onEndReachedThreshold={0.2}
-        // 3. Mostra um spinner de loading no rodapé
-            ListFooterComponent={
-            loadingMore ? <ActivityIndicator size="large" className="my-8" /> : null
+            ListEmptyComponent={
+                <View className="flex-1 items-center justify-center mt-20">
+                    <Text className="text-gray-500 text-lg">Nenhuma família cadastrada.</Text>
+                </View>
             }
         />
 
