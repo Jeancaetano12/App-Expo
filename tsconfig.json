@@ -8,7 +8,9 @@
       "@config/*": ["src/config/*"],
       "@services/*": ["src/services/*"],
       "@styles/*": ["src/styles/*"],
-      "@assets/*": ["assets/*"]
+      "@assets/*": ["assets/*"],
+      "@hooks/*": ["src/hook/*"],
+      "@types/*": ["src/types/*"]
     }
   }
 }
