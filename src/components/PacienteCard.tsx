@@ -1,7 +1,7 @@
-import React, { use } from 'react';
+import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { Paciente } from '../types/families'; // Importando o tipo de Paciente
+import { Paciente } from '../types/families';
 import { useNavigation, useRouter } from 'expo-router';
 
 interface PacienteCardProps {
@@ -13,7 +13,7 @@ export function PacienteCard({ paciente }: PacienteCardProps) {
   const router = useRouter();
 
   const onPressHandler = () => {
-    // Navegar para a tela de detalhes do paciente
+    
     router.push(`/(app)/patient/${paciente.cpf}`);
   }
   // Função para formatar a data (opcional, mas recomendado)

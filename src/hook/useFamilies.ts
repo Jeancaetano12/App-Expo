@@ -8,13 +8,14 @@ export function useFamilies() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<any>(null);
   
-  const { token } = useAuth(); 
+  const { token, logOut } = useAuth(); 
 
   // useEffect vai rodar assim que o hook for usado em um componente
   useEffect(() => {
     // Só busca os dados se o usuário estiver logado (tiver um token)
     if (!token) {
       setIsLoading(false);
+      logOut();
       return;
     }
 

@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import api from '@services/api';
 import { useAuth } from '@contexts/AuthContext';
-import { PacienteInfo } from "../types/families"; // Importando o novo tipo
+import { PacienteInfo } from "../types/families";
 
-export function useHealthRecords(cpf: string) {
+export function useGetHealthRecords(cpf: string) {
   const [records, setRecords] = useState<PacienteInfo[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<any>(null);
@@ -20,9 +20,7 @@ export function useHealthRecords(cpf: string) {
       try {
         console.log(`[useHealthRecords] Buscando registros para o CPF: ${cpf}`);
         
-        // ---- AJUSTE A ROTA AQUI SE NECESSÁRIO ----
-        // Estou assumindo que a rota para os registros é esta:
-        const response = await api.get<PacienteInfo[]>(`/patients/${cpf}/indicators`);
+        const response = await api.post<PacienteInfo[]>(`/patients/${cpf}/indicators`);
         
         setRecords(response.data); 
         console.log('[useHealthRecords] Registros carregados.');

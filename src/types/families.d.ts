@@ -31,12 +31,12 @@ export interface PaginatedFamiliesResponse {
 
 export interface PacienteInfo {
   id: string;
-  dataRegistro: Date;
+  dataRegistro: string;
   pesoKg: number | null;
   pressaoArterial: string | null;
   glicemiaMgDl: number | null;
   alturaM: number | null;
-  createdAt: Date;
-  updatedAt: Date;
   pacienteCpf: string;
+  createdAt: string;
+  updatedAt: string;
 }

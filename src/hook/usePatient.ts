@@ -4,13 +4,14 @@ import { useAuth } from "@contexts/AuthContext";
 import { Paciente } from "../types/families";
 
 export function usePatient(cpf: string) {
-    const [patient, setPatient] = useState<Paciente | null>(null);
+    const [patient, setPatient] = useState<Paciente[] | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<any>(null);
-    const { token } = useAuth();
+    const { token, logOut } = useAuth();
 
     useEffect(() => {
         if (!token || !cpf) {
+            logOut();
             setIsLoading(false);
             return;
         }
@@ -19,7 +20,7 @@ export function usePatient(cpf: string) {
             try {
                 console.log(`[usePatientDetails] Buscando paciente com CPF: ${cpf}`);
 
-                const response = await api.get<Paciente>(`/patients/${cpf}`);
+                const response = await api.get<Paciente[]>(`/patients/${cpf}`);
                 setPatient(response.data);
                 console.log("[usePatientDetails] Paciente carregado.", response.data);
             } catch (error) {

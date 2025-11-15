@@ -3,6 +3,8 @@ import { View, Text, FlatList, ActivityIndicator, TouchableOpacity, ScrollView }
 import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 import { usePatient } from '@hooks/usePatient';
+import { useGetHealthRecords } from '@hooks/useHealthRecords';
+import { PacienteIndicatorsCard } from '@components/PacienteIndicatorsCard';
 
 export default function PatientScreen() {
     const navigation = useNavigation();
@@ -56,6 +58,25 @@ export default function PatientScreen() {
                       Indicadores de Saúde
                     </Text>
             </View>
+    
+            <ScrollView className="flex-1 px-4">
+                {patient.map((indicator: any) => (
+                    <PacienteIndicatorsCard
+                        key={indicator.id}
+                        pacienteInfo={indicator}
+                        paciente={patient}
+                    />
+                ))} 
+            </ScrollView>
+
+            <TouchableOpacity
+                onPress={() => router.push('/(app)/add-family')}
+                className="absolute bottom-8 right-8 bg-primary p-4 rounded-full shadow-lg"
+                style={{ elevation: 5 }}
+            >
+                <Feather name="plus" size={28} color="white" />
+            </TouchableOpacity>
+
         </View>
     )
 }
