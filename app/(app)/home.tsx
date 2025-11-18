@@ -32,19 +32,25 @@ const mockNews = [
     id: '1', 
     title: 'Nova campanha de vacinação contra a gripe começa nos postos de bairro', 
     source: 'Ministério da Saúde', 
-    date: '14/11/2025' 
+    date: '14/11/2025',
+    image: require('../../assets/NoticiaVacina.jpeg'),
+    summary: 'A nova etapa foca em idosos e crianças. Verifique o posto mais próximo de sua casa.'
   },
   { 
     id: '2', 
     title: 'Agentes comunitários recebem novo treinamento para visitas domiciliares', 
     source: 'Jornal Local', 
-    date: '13/11/2025' 
+    date: '13/11/2025',
+    image: require('../../assets/NoticiaAgente.jpg'),
+    summary: 'Agentes recebem novas diretrizes para visitas domiciliares e identificação'
   },
   { 
     id: '3', 
     title: 'Dicas de como prevenir a dengue e chikungunya na sua comunidade', 
     source: 'Portal Saúde', 
-    date: '12/11/2025' 
+    date: '12/11/2025',
+    image: require('../../assets/NoticiaDengue.jpg'),
+    summary: 'Saiba como evitar a proliferação do mosquito com atitudes simples no seu quintal.'
   },
 ];
 // --------------------------------------------------
@@ -199,37 +205,43 @@ export default function HomeScreen() {
 
 
         {/* 6. NOVA SEÇÃO DE NOTÍCIAS */}
-        <View>
+        <View className="mb-6">
           <Text className="text-lg font-bold text-text mb-4">
             Últimas Notícias
           </Text>
 
-          {/* Mapeia o array de notícias e cria um card para cada */}
           {mockNews.map((item) => (
             <TouchableOpacity 
               key={item.id}
-              className="bg-input-bg p-4 rounded-lg mb-3 flex-row items-center"
+              className="bg-white p-3 rounded-lg mb-3 flex-row shadow-sm border border-purple-700" // Mudei para bg-white para destacar a imagem
               activeOpacity={0.7}
               onPress={() => handleNewsPress(item)}
             >
-              {/* Ícone */}
-              <View className="mr-4">
-                <Feather name="globe" size={28} className="text-primary" />
-              </View>
+              {/* --- IMAGEM DA NOTÍCIA (Lado Esquerdo) --- */}
+              <Image 
+                source={item.image}
+                className="w-24 h-24 rounded-md mr-3"
+                resizeMode="cover"
+              />
 
-              {/* Texto */}
-              <View className="flex-1">
-                <Text className="text-base font-bold text-text" numberOfLines={2}>
-                  {item.title}
-                </Text>
-                <Text className="text-sm text-secundary mt-1">
-                  Fonte: {item.source} - {item.date}
-                </Text>
-              </View>
+              {/* --- CONTEÚDO DE TEXTO (Lado Direito) --- */}
+              <View className="flex-1 justify-between py-1">
+                <View>
+                  {/* Título */}
+                  <Text className="text-base font-bold text-text leading-5 mb-1" numberOfLines={2}>
+                    {item.title}
+                  </Text>
+                  
+                  {/* Fonte e Data ("Cidade") */}
+                  <Text className="text-xs text-primary font-semibold mb-1">
+                    {item.source} • {item.date}
+                  </Text>
+                </View>
 
-              {/* Ícone de "ir" */}
-              <View className="ml-2">
-                 <Feather name="chevron-right" size={20} className="text-secundary" />
+                {/* Sinopse (Abaixo da fonte/data) */}
+                <Text className="text-sm text-gray-500 leading-4" numberOfLines={2}>
+                  {item.summary}
+                </Text>
               </View>
             </TouchableOpacity>
           ))}
