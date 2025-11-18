@@ -8,12 +8,13 @@ export function useFamilyDetails(id: string) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<any>(null);
   
-  const { token } = useAuth();
+  const { token, logOut } = useAuth();
 
   useEffect(() => {
     // Só busca se tivermos um token E um ID
     if (!token || !id) {
       setIsLoading(false);
+      logOut();
       return;
     }
 

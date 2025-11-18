@@ -3,7 +3,6 @@ import { View, Text, FlatList, ActivityIndicator, TouchableOpacity, ScrollView }
 import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 import { usePatient } from '@hooks/usePatient';
-import { useGetHealthRecords } from '@hooks/useHealthRecords';
 import { PacienteIndicatorsCard } from '@components/PacienteIndicatorsCard';
 
 export default function PatientScreen() {
@@ -27,7 +26,7 @@ export default function PatientScreen() {
                 <Text className="text-lg text-red-500 text-center">
                     Não foi possível carregar os dados do paciente.
                 </Text>
-                <TouchableOpacity onPress={() => navigation.goBack()} className="mt-4">
+                <TouchableOpacity onPress={() => router.push('/families')} className="mt-4">
                     <Text className="text-primary text-lg">Voltar</Text>
                 </TouchableOpacity>
             </View>
@@ -40,7 +39,7 @@ export default function PatientScreen() {
                 <Text className="text-lg text-red-500 text-center">
                     Paciente não possui indicadores cadastrados.
                 </Text>
-                <TouchableOpacity onPress={() => navigation.goBack()} className="mt-4">
+                <TouchableOpacity onPress={() => router.push('/families')} className="mt-4">
                     <Text className="text-primary text-lg">Voltar</Text>
                 </TouchableOpacity>
             </View>

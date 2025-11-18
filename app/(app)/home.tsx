@@ -65,15 +65,7 @@ export default function HomeScreen() {
   };
 
   const goToFamilyList = () => {
-    if (user?.role === 'ADMIN') {
-      router.push('/(app)/families');
-    } else {
-      Toast.show ({
-        type: 'error',
-        text1: 'Acesso negado ❌',
-        text2: 'Somente administradores'
-      })
-    }
+    router.push('/families');
   };
 
   // 4. FUNÇÃO PARA SIMULAR CLIQUE NA NOTÍCIA
