@@ -42,7 +42,7 @@ export function AddPatientModal({ visible, onClose, onSave }: AddPatientModalPro
                     <ScrollView showsVerticalScrollIndicator={false}>
                         <Text className="text-secondary mb-1">Nome Completo *</Text>
                         <InputDefault value={nomeCompleto} onChangeText={setNomeCompleto} 
-                        className="mb-4" placeholder='Ex: Maria Silva' />
+                        className="mb-4" placeholder='Ex: Maria Sousa' />
 
                         <Text className="text-secondary mb-1">CPF *</Text>
                         <InputDefault value={cpf} onChangeText={setCpf} 
