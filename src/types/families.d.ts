@@ -13,11 +13,18 @@ export interface Paciente {
 export interface Family {
   id: string;
   sobrenome: string;
-  endereco: string;
+  cep: string;
+  logradouro: string;
+  numero: string;
+  complemento: string | null;
+  unidade: string | null;
+  bairro: string;
+  localidade: string;
+  uf: string;
   contatoTelefone: string;
+  pacientes: Paciente[]; // Arrey de pacientes
   createdAt: string;
   updatedAt: string;
-  pacientes: Paciente[]; // É um array de Pacientes
 }
 
 // 3. (BÔNUS) Definimos a resposta da API paginada

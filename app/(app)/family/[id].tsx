@@ -70,7 +70,7 @@ export default function FamilyDetailScreen() {
               Informações da Família
             </Text>
             <Text className="text-lg text-secondary mb-2">
-              <Text className="font-bold text-text">Endereço:</Text> {family.endereco}
+              <Text className="font-bold text-text">Endereço:</Text> {family.logradouro}, {family.numero}
             </Text>
             <Text className="text-lg text-secondary">
               <Text className="font-bold text-text">Telefone:</Text> {family.contatoTelefone}

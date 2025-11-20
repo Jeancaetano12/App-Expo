@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useRouter } from 'expo-router';
 import api from '@services/api';
+import axios from 'axios';
 import Toast from 'react-native-toast-message';
 
 export interface NewPatient {
@@ -12,7 +13,14 @@ export interface NewPatient {
 
 export interface NewFamilyData {
     sobrenome: string;
-    endereco: string;
+    cep: string;
+    logradouro: string;
+    numero: string | null;
+    complemento: string | null;
+    unidade: string | null;
+    bairro: string;
+    localidade: string;
+    uf: string;
     contatoTelefone: string;
     pacientes: NewPatient[];
 }
@@ -20,12 +28,60 @@ export interface NewFamilyData {
 export function useAddFamily() {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
+    const [isLoadingCep, setIsLoadingCep] = useState(false);
 
     const [sobrenome, setSobrenome] = useState('');
-    const [endereco, setEndereco] = useState('');
+    const [cep, setCep] = useState('');
+    const [logradouro, setLogradouro] = useState('');
+    const [numero, setNumero] = useState<string | null>(null);
+    const [complemento, setComplemento] = useState<string | null>(null);
+    const [unidade, setUnidade] = useState<string | null>(null);
+    const [bairro, setBairro] = useState('');
+    const [localidade, setLocalidade] = useState('');
+    const [uf, setUf] = useState('');
     const [contatoTelefone, setContatoTelefone] = useState('');
-
     const [pacientes, setPacientes] = useState<NewPatient[]>([]);
+
+    const fetchAddressByCep = async (cepInput: string) => {
+        const cleanCep = cepInput.replace(/\D/g, '');
+
+        if (cleanCep.length !== 8 ) {
+            return;
+        }
+
+        setIsLoadingCep(true);
+        try {
+            console.log('Buscando CEP:', `${cleanCep}`);
+            const response = await axios.get(`https://viacep.com.br/ws/${cleanCep}/json/`);
+
+            if (response.data.erro) {
+                Toast.show({
+                    type: 'error',
+                    text1: 'Erro',
+                    text2: 'CEP não encontrado.',
+                })
+                return;
+            }
+
+            const { logradouro, bairro, localidade, uf } = response.data;
+            
+            console.log('Endereço encontrado:', response.data);
+
+            setLogradouro(logradouro);
+            setBairro(bairro);
+            setLocalidade(localidade);
+            setUf(uf);
+        } catch (error) {
+            console.error(error);
+            Toast.show({
+                type: 'error',
+                text1: 'Erro',
+                text2: 'Não foi possível buscar o CEP. Tente novamente.',
+            });
+        } finally {
+            setIsLoadingCep(false);
+        }
+    }
 
     const addPatientToList = (patient: NewPatient) => {
         if (!patient.cpf || !patient.nomeCompleto || !patient.dataNascimento) {
@@ -45,11 +101,11 @@ export function useAddFamily() {
     };
 
     const saveFamily = async () => {
-        if (!sobrenome || !endereco || pacientes.length === 0) {
+        if (!sobrenome || !cep || !logradouro || !contatoTelefone || !numero || pacientes.length === 0) {
             Toast.show({
                 type: 'error',
                 text1: 'Erro',
-                text2: 'A família precisa de pelo menos UM integrante.',
+                text2: 'Preencha os dados obrigatórios (Sobrenome, CEP, Pacientes).',
             });
             return;
         }
@@ -58,7 +114,14 @@ export function useAddFamily() {
         try {
             const payload: NewFamilyData = {
                 sobrenome,
-                endereco,
+                cep,
+                logradouro,
+                numero,
+                complemento,
+                unidade,
+                bairro,
+                localidade,
+                uf,
                 contatoTelefone,
                 pacientes,
             };
@@ -86,12 +149,20 @@ export function useAddFamily() {
     return {
         // States
         sobrenome, setSobrenome,
-        endereco, setEndereco,
+        cep, setCep,
+        logradouro, setLogradouro,
+        numero, setNumero,
+        complemento, setComplemento,
+        unidade, setUnidade,
+        bairro, setBairro,
+        localidade, setLocalidade,
+        uf, setUf,
         contatoTelefone, setContatoTelefone,
-        pacientes, isLoading, setIsLoading,
+        pacientes, isLoading, setIsLoading, isLoadingCep,
         // Ações
         addPatientToList,
         removePatientFromList,
         saveFamily,
+        fetchAddressByCep
     };
 }

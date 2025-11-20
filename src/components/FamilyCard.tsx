@@ -22,12 +22,12 @@ export function FamilyCard({ family, onPress }: FamilyCardProps) {
         <View className="flex-row items-center bg-primary/20 px-2 py-1 rounded-full">
           <Feather name="users" size={14} className="text-primary" />
           <Text className="text-sm font-semibold text-primary ml-1">
-            {patientCount} {patientCount === 1 ? 'Integrante' : 'Pessoas'}
+            {patientCount} {patientCount === 1 ? 'Paciente' : 'Pacientes'}
           </Text>
         </View>
       </View>
       
-      <Text className="text-base text-secondary">Endereço: {family.endereco}</Text>
+      <Text className="text-base text-secondary">{family.logradouro}, {family.numero}</Text>
     </TouchableOpacity>
   );
 }

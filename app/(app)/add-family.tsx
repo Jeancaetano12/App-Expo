@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, FlatList } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 
@@ -13,10 +13,17 @@ export default function AddFamilyScreen() {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const {
         sobrenome, setSobrenome,
-        endereco, setEndereco,
+        cep, setCep,
+        logradouro, setLogradouro,
+        numero, setNumero,
+        complemento, setComplemento,
+        unidade, setUnidade,
+        bairro, setBairro,
+        localidade, setLocalidade,
+        uf, setUf,
         contatoTelefone, setContatoTelefone,
         pacientes, addPatientToList, removePatientFromList,
-        saveFamily, isLoading
+        saveFamily, isLoading, isLoadingCep, fetchAddressByCep
     } = useAddFamily();
 
     return (
@@ -41,14 +48,61 @@ export default function AddFamilyScreen() {
                     className="mb-4"
                 />
 
-                <Text className="text-secondary mb-1">Endereço *</Text>
+                <Text className="flex-row items-center justify-between mb-1">
+                    <Text className='text-secondary'>CEP *</Text>
+                    {isLoadingCep && <ActivityIndicator size="small" color="#6366f1" />}
+                </Text>
                 <InputDefault 
-                    value={endereco} 
-                    onChangeText={setEndereco} 
-                    placeholder='Ex: Rua das Flores, 123'
-                    className="mb-4"
+                    value={cep} 
+                    onChangeText={(text) => {
+                        fetchAddressByCep(text);
+                        setCep(text);
+                    }}
+                    onBlur={() => fetchAddressByCep(cep)}
+                    placeholder='00000-000'
+                    keyboardType='numeric'
+                    maxLength={9}
+                    className='mb-4'
                 />
-                <Text className="text-secondary mb-1">Telefone para Contato</Text>
+
+                <View className="flex-row gap-2 mb-4">
+                    <View className="flex-1">
+                        <Text className="text-secondary mb-1">Rua / Logradouro *</Text>
+                        <InputDefault
+                            value={logradouro}
+                            onChangeText={setLogradouro}
+                            placeholder='Rua das Flores'
+                        />
+                    </View>
+                    <View className="w-1/4">
+                        <Text className="text-secondary mb-1">Número *</Text>
+                        <InputDefault
+                            value={numero ?? ''}
+                            onChangeText={setNumero}
+                            placeholder='Ex: 123'
+                            keyboardType='numeric'
+                        />
+                    </View>
+                </View>
+                
+                <Text className='text-secondary mb-1'>Bairro</Text>
+                <InputDefault value={bairro} onChangeText={setBairro} placeholder='Ex: Centro' className="mb-4" />
+
+                <View className="flex-row gap-2 mb-4">
+                    <View className="flex-1">
+                        <Text className="text-secondary mb-1">Cidade *</Text>
+                        <InputDefault value={localidade} onChangeText={setLocalidade} placeholder='Ex: Fortaleza' />
+                    </View>
+                    <View className="w-1/5">
+                        <Text className="text-secondary mb-1">UF *</Text>
+                        <InputDefault value={uf} onChangeText={setUf} placeholder='Ex: CE' maxLength={2} />
+                    </View>
+                </View>
+
+                <Text className='text-secondary mb-1'>Complemento</Text>
+                <InputDefault value={complemento ?? ''} onChangeText={setComplemento} placeholder='Ex: Apto 101' className="mb-4" />
+                
+                <Text className="text-secondary mb-1">Telefone principal de contato</Text>
                 <InputDefault
                     value={contatoTelefone}
                     onChangeText={setContatoTelefone}
