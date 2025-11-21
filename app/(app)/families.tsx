@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { View, Text, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { useNavigation, useRouter } from 'expo-router';
 import { Feather } from '@expo/vector-icons';

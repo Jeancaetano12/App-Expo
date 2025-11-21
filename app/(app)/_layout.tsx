@@ -1,7 +1,7 @@
 import { Drawer } from 'expo-router/drawer';
 import { useAuth } from '@contexts/AuthContext';
 import DrawerContent from '@components/DrawerContent';
-import { Button, View } from 'react-native'; 
+
 
 export default function AppLayout() {
   const { signOut } = useAuth();

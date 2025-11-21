@@ -4,7 +4,6 @@ import { useAuth } from '@contexts/AuthContext';
 import { Header } from '@components/Header';
 import { useRouter } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
-import { FontAwesome6 } from '@expo/vector-icons';
 import Toast from 'react-native-toast-message';
 
 // ⚠️ Se o seu objeto 'user' for tipado (TS), você deve garantir que estes campos existam na sua interface de usuário.
@@ -60,6 +59,7 @@ export default function ProfileScreen() {
             resizeMode="cover"
           />
           <Text className="text-2xl font-bold text-text">{user.nomeCompleto || 'Nome Não Encontrado'}</Text>
+          <Text className="text-sm text-purple-800">{user.role || 'Função Não Definida'}</Text>
         </View>
 
         {/* --- 3. Dados Profissionais (USANDO USER) --- */}

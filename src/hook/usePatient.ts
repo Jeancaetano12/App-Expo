@@ -1,36 +1,38 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import api from "@services/api";
 import { useAuth } from "@contexts/AuthContext";
 import { Paciente } from "../types/families";
 
 export function usePatient(cpf: string) {
-    const [patient, setPatient] = useState<Paciente[] | null>(null);
+    // Mudado para any[] temporariamente pois seus indicadores parecem ter estrutura própria
+    // O ideal seria criar uma interface Indicator também
+    const [patient, setPatient] = useState<any[] | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<any>(null);
     const { token, logOut } = useAuth();
 
-    useEffect(() => {
+    const fetchPatient = useCallback(async () => {
         if (!token || !cpf) {
-            logOut();
             setIsLoading(false);
             return;
         }
 
-        const fetchPatient = async () => {
-            try {
-                console.log(`[usePatientDetails] Buscando paciente com CPF: ${cpf}`);
-
-                const response = await api.get<Paciente[]>(`/patients/${cpf}`);
-                setPatient(response.data);
-                console.log("[usePatientDetails] Paciente carregado.", response.data);
-            } catch (error) {
-                console.error(`[usePatientDetails] Erro ao buscar paciente ${cpf}:`, error);
-                setError(error);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-        fetchPatient();
+        try {
+            setIsLoading(true);
+            console.log(`[usePatient] Buscando dados do CPF: ${cpf}`);
+            const response = await api.get(`/patients/${cpf}`);
+            setPatient(response.data);
+        } catch (error) {
+            console.error(`[usePatient] Erro ao buscar:`, error);
+            setError(error);
+        } finally {
+            setIsLoading(false);
+        }
     }, [token, cpf]);
-    return { patient, isLoading, error };
+
+    useEffect(() => {
+        fetchPatient();
+    }, [fetchPatient]);
+
+    return { patient, isLoading, error, refetch: fetchPatient };
 }
