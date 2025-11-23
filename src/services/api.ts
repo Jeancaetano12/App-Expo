@@ -1,8 +1,9 @@
 import axios from 'axios';
+// link da vercel: https://mobile-backend-nu.vercel.app
+export const API_URL = 'http://192.168.18.38:3000';
 
 const api = axios.create({
-    // link da vercel: https://mobile-backend-nu.vercel.app
-    baseURL: 'http://192.168.18.38:3000',
+    baseURL: API_URL,
 });
 
 export default api;

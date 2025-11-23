@@ -133,7 +133,7 @@ export default function HomeScreen() {
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => router.push('/(app)/add-family')}
+            onPress={() => router.push('/(app)/reports')}
             className="bg-input-bg p-4 mb-4 rounded-lg flex-row items-center gap-3 w-[48%]"
             activeOpacity={0.5}
           >
