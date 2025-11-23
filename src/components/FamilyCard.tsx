@@ -27,7 +27,7 @@ export function FamilyCard({ family, onPress }: FamilyCardProps) {
         </View>
       </View>
       
-      <Text className="text-base text-secondary">{family.logradouro}, {family.numero}</Text>
+      <Text className="text-base text-secondary">{family.logradouro}, N°: {family.numero}</Text>
     </TouchableOpacity>
   );
 }

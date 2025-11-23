@@ -23,7 +23,8 @@ export default function AddFamilyScreen() {
         uf, setUf,
         contatoTelefone, setContatoTelefone,
         pacientes, addPatientToList, removePatientFromList,
-        saveFamily, isLoading, isLoadingCep, fetchAddressByCep
+        saveFamily, isLoading, isLoadingCep, fetchAddressByCep,
+        fetchCurrentLocation, isLoadingLocation 
     } = useAddFamily();
 
     return (
@@ -37,7 +38,7 @@ export default function AddFamilyScreen() {
                 </Text>
             </View>
 
-            <ScrollView className="flex-1 p4">
+            <ScrollView className="flex-1 px-4">
                 {/* secão 1: Dados da familia */}
                 <Text className='text-lg font-bold text-primary mb-4'>1. Dados da Família</Text>
                 <Text className="text-secondary mb-1">Sobrenome da Família *</Text>
@@ -48,22 +49,48 @@ export default function AddFamilyScreen() {
                     className="mb-4"
                 />
 
-                <Text className="flex-row items-center justify-between mb-1">
+                <View className="flex-row items-center justify-between mb-1">
                     <Text className='text-secondary'>CEP *</Text>
-                    {isLoadingCep && <ActivityIndicator size="small" color="#6366f1" />}
-                </Text>
-                <InputDefault 
-                    value={cep} 
-                    onChangeText={(text) => {
-                        fetchAddressByCep(text);
-                        setCep(text);
-                    }}
-                    onBlur={() => fetchAddressByCep(cep)}
-                    placeholder='00000-000'
-                    keyboardType='numeric'
-                    maxLength={9}
-                    className='mb-4'
-                />
+                    {/* Indicadores de carregamento */}
+                    {(isLoadingCep || isLoadingLocation) && (
+                        <View className="flex-row items-center">
+                            <ActivityIndicator size="small" color="#6366f1" />
+                            <Text className="text-xs text-primary ml-2">
+                                {isLoadingLocation ? 'Localizando...' : 'Buscando endereço...'}
+                            </Text>
+                        </View>
+                    )}
+                </View>
+
+                {/* Input de CEP com Botão de GPS acoplado */}
+                <View className="flex-row items-center gap-2 mb-4">
+                    <View className="flex-1">
+                        <InputDefault 
+                            value={cep} 
+                            onChangeText={(text) => {
+                                setCep(text);
+                                if(text.length >= 8) fetchAddressByCep(text);
+                            }}
+                            onBlur={() => fetchAddressByCep(cep)}
+                            placeholder='00000-000'
+                            keyboardType='numeric'
+                            maxLength={9}
+                            className="mb-0" 
+                        />
+                    </View>
+                    
+                    <TouchableOpacity 
+                        onPress={fetchCurrentLocation}
+                        disabled={isLoadingLocation}
+                        className="bg-purple-100 p-3 rounded-lg border border-purple-200 justify-center items-center h-14 w-14"
+                    >
+                        {isLoadingLocation ? (
+                            <ActivityIndicator color="#6b21a8" />
+                        ) : (
+                            <Feather name="map-pin" size={24} className="text-purple-800" color="#6b21a8" />
+                        )}
+                    </TouchableOpacity>
+                </View>
 
                 <View className="flex-row gap-2 mb-4">
                     <View className="flex-1">
@@ -122,21 +149,22 @@ export default function AddFamilyScreen() {
                         <Text className="text-primary font-semibold">Adicionar Paciente</Text>
                     </TouchableOpacity>
                 </View>
-                {/* Lista visual de pacientes adicionados temporaraiamente */}
+                
+                {/* Lista visual de pacientes */}
                 {pacientes.length === 0 ? (
                     <View className="bg-input-bg p-6 rounded-lg items-center mb-8 border-dashed border-2 border-gray-300 dark:border-gray-700">
-                        <Text className='text-sencondary'>Nenhum paciente adicionado ainda</Text>
+                        <Text className='text-secondary'>Nenhum paciente adicionado ainda</Text>
                     </View>
                 ): (
                     <View className='mb-8'>
                         {pacientes.map((p, index) => (
-                            <View key={index} className="bg-input-bg p4 rounded-lg mb-2 flex-row justify-between items-center">
+                            <View key={index} className="bg-input-bg p-4 rounded-lg mb-2 flex-row justify-between items-center shadow-sm">
                                 <View>
-                                    <Text className="font-bold text-text">{p.nomeCompleto}</Text>
+                                    <Text className="font-bold text-text text-lg">{p.nomeCompleto}</Text>
                                     <Text className="text-secondary text-sm">CPF: {p.cpf}</Text>
                                 </View>
-                                <TouchableOpacity onPress={() => removePatientFromList(p.cpf)}>
-                                    <Feather name="trash-2" size={20} className="text-red-500" />
+                                <TouchableOpacity onPress={() => removePatientFromList(p.cpf)} className="p-2">
+                                    <Feather name="trash-2" size={20} className="text-red-500" color="#ef4444" />
                                 </TouchableOpacity>
                             </View>
                         ))}
@@ -149,6 +177,9 @@ export default function AddFamilyScreen() {
                     onPress={saveFamily}
                     disabled={isLoading}
                 />
+                
+                {/* Espaço extra no final para scroll */}
+                <View className="h-10" /> 
             </ScrollView>
 
             <AddPatientModal
