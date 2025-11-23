@@ -1,13 +1,15 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'expo-router';
 import api from '@services/api';
 import axios from 'axios';
 import Toast from 'react-native-toast-message';
+import * as Location from 'expo-location';
+import { useAuth } from '@contexts/AuthContext';
 
 export interface NewPatient {
     cpf: string;
     nomeCompleto: string;
-    dataNascimento: string; // formato 'YYYY-MM-DD'
+    dataNascimento: string; 
     pacienteTelefone: string;
 }
 
@@ -27,8 +29,12 @@ export interface NewFamilyData {
 
 export function useAddFamily() {
     const router = useRouter();
+    // 2. Obtendo token e logout do contexto
+    const { token, logOut } = useAuth();
+
     const [isLoading, setIsLoading] = useState(false);
     const [isLoadingCep, setIsLoadingCep] = useState(false);
+    const [isLoadingLocation, setIsLoadingLocation] = useState(false);
 
     const [sobrenome, setSobrenome] = useState('');
     const [cep, setCep] = useState('');
@@ -41,6 +47,13 @@ export function useAddFamily() {
     const [uf, setUf] = useState('');
     const [contatoTelefone, setContatoTelefone] = useState('');
     const [pacientes, setPacientes] = useState<NewPatient[]>([]);
+
+    // Verifica o token assim que o hook é carregado
+    useEffect(() => {
+        if (!token) {
+            logOut();
+        }
+    }, [token, logOut]);
 
     const fetchAddressByCep = async (cepInput: string) => {
         const cleanCep = cepInput.replace(/\D/g, '');
@@ -65,8 +78,6 @@ export function useAddFamily() {
 
             const { logradouro, bairro, localidade, uf } = response.data;
             
-            console.log('Endereço encontrado:', response.data);
-
             setLogradouro(logradouro);
             setBairro(bairro);
             setLocalidade(localidade);
@@ -82,6 +93,58 @@ export function useAddFamily() {
             setIsLoadingCep(false);
         }
     }
+
+    const fetchCurrentLocation = async () => {
+        setIsLoadingLocation(true);
+        try {
+            const { status } = await Location.requestForegroundPermissionsAsync();
+            if (status !== 'granted') {
+                Toast.show({
+                    type: 'error',
+                    text1: 'Permissão negada',
+                    text2: 'Precisamos da sua localização para preencher o CEP.',
+                });
+                return;
+            }
+
+            const location = await Location.getCurrentPositionAsync({});
+            
+            const address = await Location.reverseGeocodeAsync({
+                latitude: location.coords.latitude,
+                longitude: location.coords.longitude
+            });
+
+            if (address.length > 0 && address[0].postalCode) {
+                const foundCep = address[0].postalCode;
+                console.log("CEP encontrado via GPS:", foundCep);
+                
+                setCep(foundCep);
+                await fetchAddressByCep(foundCep);
+                
+                Toast.show({
+                    type: 'success',
+                    text1: 'Localização encontrada',
+                    text2: 'Endereço preenchido com sucesso!',
+                });
+            } else {
+                Toast.show({
+                    type: 'info',
+                    text1: 'Atenção',
+                    text2: 'Não conseguimos identificar o CEP exato desta localização.',
+                });
+            }
+
+        } catch (error) {
+            console.error("Erro ao buscar localização:", error);
+            Toast.show({
+                type: 'error',
+                text1: 'Erro',
+                text2: 'Falha ao obter localização atual.',
+            });
+        } finally {
+            setIsLoadingLocation(false);
+        }
+    };
 
     const addPatientToList = (patient: NewPatient) => {
         if (!patient.cpf || !patient.nomeCompleto || !patient.dataNascimento) {
@@ -101,6 +164,12 @@ export function useAddFamily() {
     };
 
     const saveFamily = async () => {
+        // 4. Verificação extra de segurança antes de salvar
+        if (!token) {
+            logOut();
+            return;
+        }
+
         if (!sobrenome || !cep || !logradouro || !contatoTelefone || !numero || pacientes.length === 0) {
             Toast.show({
                 type: 'error',
@@ -125,7 +194,6 @@ export function useAddFamily() {
                 contatoTelefone,
                 pacientes,
             };
-            console.log('Enviando payload:', JSON.stringify(payload, null, 2));
 
             await api.post('/family', payload);
             Toast.show({
@@ -147,7 +215,6 @@ export function useAddFamily() {
     };
 
     return {
-        // States
         sobrenome, setSobrenome,
         cep, setCep,
         logradouro, setLogradouro,
@@ -159,10 +226,11 @@ export function useAddFamily() {
         uf, setUf,
         contatoTelefone, setContatoTelefone,
         pacientes, isLoading, setIsLoading, isLoadingCep,
-        // Ações
+        isLoadingLocation,
         addPatientToList,
         removePatientFromList,
         saveFamily,
-        fetchAddressByCep
+        fetchAddressByCep,
+        fetchCurrentLocation
     };
 }

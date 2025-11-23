@@ -36,7 +36,7 @@ export function useFamilies() {
     };
 
     fetchFamilies();
-  }, []); // O hook vai rodar de novo se o token mudar (ex: usuário deslogar)
+  }, [token]); // O hook vai rodar de novo se o token mudar (ex: usuário deslogar)
 
   return { families, isLoading, error };
 }

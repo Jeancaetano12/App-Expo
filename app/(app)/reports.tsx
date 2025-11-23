@@ -11,7 +11,7 @@ export default function ReportScreen() {
     return (
         <View className="flex-1 bg-background">
             {/* Header */}
-            <View className='flex-row bg-purple-800 items-center p-4 pb-5 pt-12 mb-6 shadow-md'>
+            <View className='flex-row bg-purple-800 items-center p-4 pb-5 mb-4'>
                 <TouchableOpacity onPress={() => router.back()} className="p-2 mr-2">
                     <Feather name="arrow-left" size={24} color="white" />
                 </TouchableOpacity>

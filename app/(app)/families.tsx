@@ -57,7 +57,7 @@ return (
         {/* Botão Flutuante (FAB) para Adicionar Nova Família */}
         <TouchableOpacity
             onPress={() => router.push('/(app)/add-family')}
-            className="absolute bottom-8 right-8 bg-primary p-4 rounded-full shadow-lg"
+            className="absolute bottom-8 right-8 bg-purple-800 p-4 rounded-full shadow-lg items-center justify-center"
             style={{ elevation: 5 }}
         >
             <Feather name="plus" size={28} color="white" />
